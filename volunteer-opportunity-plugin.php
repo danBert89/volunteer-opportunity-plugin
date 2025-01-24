@@ -24,7 +24,13 @@ function myplugin_activate()
                 skills_required TEXT);");
 }
 
+function myplugin_deactivate()
+{
+    global $wpdb;
 
+    $wpdb->query("DELETE FROM {$wpdb->prefix}volunteer_opportunity");
+}
 
 //Hooks
 register_activation_hook(__FILE__, 'myplugin_activate');
+register_deactivation_hook(__FILE__, 'myplugin_deactivate');
