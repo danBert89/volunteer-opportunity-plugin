@@ -31,6 +31,13 @@ function myplugin_deactivate()
     $wpdb->query("DELETE FROM {$wpdb->prefix}volunteer_opportunity");
 }
 
+function myplugin_uninstall()
+{
+    global $wpdb;
+    $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}volunteer_opportunity");
+}
+
 //Hooks
 register_activation_hook(__FILE__, 'myplugin_activate');
 register_deactivation_hook(__FILE__, 'myplugin_deactivate');
+register_uninstall_hook(__FILE__, 'myplugin_uninstall');
