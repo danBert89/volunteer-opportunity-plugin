@@ -39,6 +39,7 @@ function myplugin_uninstall()
 
 function wp_volunteer_adminpage_html()
 {
+    global $wpdb;
 ?>
     <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
     <h2>Insert Volunteer Opportunity</h2>
@@ -82,9 +83,19 @@ function wp_volunteer_adminpage_html()
     </form>
 
 <?php
-
-
-
+    $wpdb->insert(
+        "{$wpdb->prefix}volunteer_opportunity",
+        array(
+            'position' => $_POST['position'],
+            'organization' => $_POST['organization'],
+            'type' => $_POST['type'],
+            'email' => $_POST['email'],
+            'description' => $_POST['description'],
+            'location' => $_POST['location'],
+            'hours' => $_POST['hours'],
+            'skills_required' => $_POST['skills_required'],
+        )
+    );
 }
 
 function wp_volunteer_adminpage()
