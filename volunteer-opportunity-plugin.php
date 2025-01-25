@@ -82,25 +82,28 @@ function wp_volunteer_adminpage_html()
         <button type="submit" name="submit" style="margin-left: 150px;">Submit</button>
     </form>
 
-<?php
+    <p> POST_ARRAY <?php var_dump($_POST) ?> </p>
 
-    if (filter_var($_POST['hours'], FILTER_VALIDATE_INT) !== false) {
+<?php
+    if (isset($_POST['submit'])) {
         $wpdb->insert(
             "{$wpdb->prefix}volunteer_opportunity",
             array(
                 'position' => $_POST['position'],
                 'organization' => $_POST['organization'],
-                'type' => $_POST['type'],
+                'type_of_commitment' => $_POST['type'],
                 'email' => $_POST['email'],
                 'description' => $_POST['description'],
                 'location' => $_POST['location'],
                 'hours' => $_POST['hours'],
-                'skills_required' => $_POST['skills_required'],
+                'skills_required' => $_POST['skills'],
             )
         );
-        echo "Volunteer opportunity added successfully.";
-    } else {
-        echo "Hours must be an integer value.";
+        if ($wpdb->last_error) {
+            echo "<p>Error: " . $wpdb->last_error . "</p>";
+        } else {
+            echo "<p>Volunteer opportunity added successfully!</p>";
+        }
     }
 }
 
