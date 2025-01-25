@@ -224,18 +224,74 @@ function wp_volunteer_adminpage_html()
 <?php
 }
 
-function delete_row($table_name, $id)
+function wporg_shortcode($atts = [], $contentPARAM = null)
 {
     global $wpdb;
 
-    $wpdb->query("DELETE FROM {$table_name} WHERE id = {$id}");
+    $atts = shortcode_atts([
+        'hours' => null,
+        'type' => null,
+    ], $atts);
+
+    $query = "SELECT * FROM {$wpdb->prefix}volunteer_opportunity WHERE 1=1";
+    if ($atts['hours'] !== null) {
+        $query .= $wpdb->prepare(" AND hours < %d", $atts['hours']);
+    }
+    if ($atts['type'] !== null) {
+        $query .= $wpdb->prepare(" AND type_of_commitment = %s", $atts['type']);
+    }
+
+    $results = $wpdb->get_results($query, ARRAY_A);
+
+    $content = '<table border="1" style="width: 80%; border-collapse: collapse;">';
+    $content .= '<thead>';
+    $content .= '<tr>';
+    $content .= '<th>Position</th>';
+    $content .= '<th>Organization</th>';
+    $content .= '<th>Type of Commitment</th>';
+    $content .= '<th>Email</th>';
+    $content .= '<th>Location</th>';
+    $content .= '<th>Hours</th>';
+    $content .= '<th>Skills Required</th>';
+    $content .= '<th>Description</th>';
+    $content .= '</tr>';
+    $content .= '</thead>';
+    $content .= '<tbody>';
+
+    foreach ($results as $row) {
+        $row_style = '';
+
+        if ($atts['hours'] === null) {
+            if ($row['hours'] < 10) {
+                $row_style = 'background-color: #d4edda;';
+            } elseif ($row['hours'] >= 10 && $row['hours'] <= 100) {
+                $row_style = 'background-color: #fff3cd;';
+            } else {
+                $row_style = 'background-color: #f8d7da;';
+            }
+        }
+        $content .= '<tr style="' . esc_attr($row_style) . '">';
+        $content .= '<td>' . esc_html($row['position']) . '</td>';
+        $content .= '<td>' . esc_html($row['organization']) . '</td>';
+        $content .= '<td>' . esc_html($row['type_of_commitment']) . '</td>';
+        $content .= '<td>' . esc_html($row['email']) . '</td>';
+        $content .= '<td>' . esc_html($row['location']) . '</td>';
+        $content .= '<td>' . esc_html($row['hours']) . '</td>';
+        $content .= '<td>' . esc_html($row['skills_required']) . '</td>';
+        $content .= '<td>' . esc_html($row['description']) . '</td>';
+        $content .= '</tr>';
+    }
+    $content .= '</tbody>';
+    $content .= '</table>';
+
+    return $content;
 }
+
 function wp_volunteer_adminpage()
 {
     add_menu_page("Welcome to the Volunteer Opportunities Admin Page", "Volunteer", "manage_options", "volunteer_admin", "wp_volunteer_adminpage_html", "", 20);
 }
-
-
+add_shortcode("volunteer", "wporg_shortcode");
 add_action("admin_menu", "wp_volunteer_adminpage");
 register_activation_hook(__FILE__, 'myplugin_activate');
 register_deactivation_hook(__FILE__, 'myplugin_deactivate');
