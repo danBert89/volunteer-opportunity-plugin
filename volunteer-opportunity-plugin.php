@@ -224,7 +224,7 @@ function wp_volunteer_adminpage_html()
 <?php
 }
 
-function wporg_shortcode($atts = [], $contentPARAM = null)
+function wporg_shortcode($atts = [], $content = null)
 {
     global $wpdb;
 
@@ -263,11 +263,11 @@ function wporg_shortcode($atts = [], $contentPARAM = null)
 
         if ($atts['hours'] === null) {
             if ($row['hours'] < 10) {
-                $row_style = 'background-color: #d4edda;';
+                $row_style = 'background-color:rgb(26, 228, 37);';
             } elseif ($row['hours'] >= 10 && $row['hours'] <= 100) {
-                $row_style = 'background-color: #fff3cd;';
+                $row_style = 'background-color:rgb(255, 247, 4);';
             } else {
-                $row_style = 'background-color: #f8d7da;';
+                $row_style = 'background-color:rgb(255, 9, 9);';
             }
         }
         $content .= '<tr style="' . esc_attr($row_style) . '">';
