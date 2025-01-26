@@ -261,7 +261,7 @@ function wporg_shortcode($atts = [], $content = null)
     foreach ($results as $row) {
         $row_style = '';
 
-        if ($atts['hours'] === null) {
+        if ($atts['hours'] === null && $atts['type'] === null) {
             if ($row['hours'] < 10) {
                 $row_style = 'background-color:rgb(26, 228, 37);';
             } elseif ($row['hours'] >= 10 && $row['hours'] <= 100) {
